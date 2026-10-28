@@ -1,0 +1,38 @@
+# dsh-opencode-go-usage bundle patch.
+#
+# Inserts the Host half of the plugin. The Client half is declared through
+# package.json `dsh.client` and renders the usage bar below the composer.
+#
+# Configuration (row `config`, all optional):
+#   credential:       environment-variable name resolved through the Harness
+#                     credential store (falls back to the process environment
+#                     and OpenCode's own auth.json). Default: OPENCODE_GO_API_KEY.
+#   baseUrl:          usage endpoint. Default: https://opencode.ai/zen/go/v1/usage
+#   statusUrl:        plan-status endpoint used for the exact dollar allowance,
+#                     plan name and billing period.
+#                     Default: https://opencode.ai/console/api/go/status
+#   enrich:           set false to skip statusUrl entirely. Default: true
+#   refreshMs:        how often a cached snapshot may be refetched. Default: 60000.
+#   timeoutMs:        per-request timeout. Default: 15000.
+#   monthlyLimitUsd:  plan's monthly allowance in USD, used to estimate the
+#                     remaining dollars of each window. Default: 60 (Go plan).
+#   limits:           optional explicit USD allowance per window, e.g.
+#                     { rolling: 12, weekly: 30, monthly: 60 }. Overrides the
+#                     ratios derived from monthlyLimitUsd.
+#   planLabel:        plan name shown in the widget. Default: Go.
+#   providers:        LLM provider route keys that count as OpenCode GO.
+#                     Default: [opencode-go, opencode].
+#   debug:            include the raw usage payload in the state response. Default: false.
+- insert:
+    - id: opencode-go-usage
+      name: "@local/dsh-opencode-go-usage"
+      config:
+        credential: OPENCODE_GO_API_KEY
+        baseUrl: https://opencode.ai/zen/go/v1/usage
+        statusUrl: https://opencode.ai/console/api/go/status
+        enrich: true
+        refreshMs: 60000
+        timeoutMs: 15000
+        monthlyLimitUsd: 60
+        planLabel: Go
+        debug: false
